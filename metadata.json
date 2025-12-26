@@ -1,0 +1,7 @@
+{
+  "name": "Little English Explorer",
+  "description": "An interactive English learning app for children aged 4-6, featuring cartoon flashcards, AI voice conversations, and educational games.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
