@@ -25,11 +25,9 @@ const FlashcardView: React.FC = () => {
   const [imageMap, setImageMap] = useState<Record<string, string>>({});
   const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
-  const [feedback, setFeedback] = useState<'NONE' | 'SUCCESS' | 'TRY_AGAIN'>('NONE');
   
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Mouse Wheel to Horizontal Scroll for Desktop
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -57,14 +55,12 @@ const FlashcardView: React.FC = () => {
     e.stopPropagation();
     setIsFlipped(false);
     setCurrentIndex(prev => (prev < filteredCards.length - 1 ? prev + 1 : 0));
-    setFeedback('NONE');
   };
   
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsFlipped(false);
     setCurrentIndex(prev => (prev > 0 ? prev - 1 : filteredCards.length - 1));
-    setFeedback('NONE');
   };
 
   const handleDiscoverMore = async () => {
@@ -110,53 +106,53 @@ const FlashcardView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full overflow-x-hidden">
-      {/* 20 CATEGORIES */}
+    <div className="flex flex-col items-center w-full overflow-x-hidden pt-1 pb-4">
+      {/* CATEGORIES - More compact */}
       <div className="w-full bg-white/60 backdrop-blur-md border-b border-gray-100 overflow-hidden flex-shrink-0">
         <div ref={scrollRef} className="overflow-x-auto no-scrollbar w-full">
-          <div className="category-scroll-wrapper gap-3 py-4">
+          <div className="category-scroll-wrapper gap-2 py-3 px-4">
             {CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => { setActiveCategory(cat.id); setCurrentIndex(0); setIsFlipped(false); }}
-                className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-24 rounded-[30px] transition-all border-b-4 active:translate-y-1 ${
+                className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-20 rounded-[25px] transition-all border-b-4 active:translate-y-1 ${
                   activeCategory === cat.id 
-                  ? `${cat.color} text-white border-black/5 shadow-lg scale-105` 
+                  ? `${cat.color} text-white border-black/5 shadow-md scale-105` 
                   : 'bg-white text-gray-400 border-gray-50'
                 }`}
               >
-                <span className="text-3xl mb-1">{cat.icon}</span>
-                <span className="text-[9px] font-black uppercase tracking-tighter">{cat.name}</span>
+                <span className="text-2xl mb-1">{cat.icon}</span>
+                <span className="text-[8px] font-black uppercase tracking-tighter">{cat.name}</span>
               </button>
             ))}
-            <div className="flex-shrink-0 w-4 h-1"></div>
+            <div className="flex-shrink-0 w-2 h-1"></div>
           </div>
         </div>
       </div>
 
-      {/* Responsive Flip Card */}
+      {/* Responsive Flip Card - Optimized for smaller viewports */}
       <div 
-        className="w-[min(340px,90vw)] aspect-[3/4.2] perspective-1000 relative mt-6 select-none" 
+        className="w-[min(310px,85vw)] aspect-[3/4] perspective-1000 relative mt-4 select-none" 
         onClick={() => setIsFlipped(!isFlipped)}
       >
         <div className={`w-full h-full transition-transform duration-700 preserve-3d cursor-pointer ${isFlipped ? 'rotate-y-180' : ''}`}>
           
           {/* Front: English */}
-          <div className="absolute inset-0 backface-hidden bg-white rounded-[50px] border-[8px] border-sky-50 shadow-xl flex flex-col items-center justify-between p-6">
-            <div className="text-[10px] font-black text-sky-500 bg-sky-50 px-5 py-1.5 rounded-full uppercase tracking-widest">
+          <div className="absolute inset-0 backface-hidden bg-white rounded-[40px] border-[6px] border-sky-50 shadow-lg flex flex-col items-center justify-between p-5">
+            <div className="text-[9px] font-black text-sky-500 bg-sky-50 px-4 py-1 rounded-full uppercase tracking-widest">
               {activeCategory} • {currentIndex + 1}/{filteredCards.length}
             </div>
 
-            <div className="flex-1 flex items-center justify-center w-full my-4 overflow-hidden">
+            <div className="flex-1 flex items-center justify-center w-full my-2 overflow-hidden">
               {imageMap[currentCard?.id || ''] ? (
                 <img src={imageMap[currentCard!.id]} className="w-full h-full object-contain rounded-2xl animate-in zoom-in" alt={currentCard?.word} />
               ) : (
-                <div className="flex flex-col items-center gap-4">
-                  <div className={`text-[120px] drop-shadow-xl ${loadingIds.has(currentCard?.id || '') ? 'animate-pulse' : ''}`}>
+                <div className="flex flex-col items-center gap-2">
+                  <div className={`text-[100px] drop-shadow-lg leading-none ${loadingIds.has(currentCard?.id || '') ? 'animate-pulse' : ''}`}>
                     {currentCard?.emoji}
                   </div>
                   {!loadingIds.has(currentCard?.id || '') && (
-                    <button onClick={handleDrawImage} className="text-[10px] font-black text-white bg-sky-400 px-6 py-2.5 rounded-full border-b-4 border-sky-600 shadow-md active:translate-y-1 active:border-b-0 transition-all">
+                    <button onClick={handleDrawImage} className="text-[8px] font-black text-white bg-sky-400 px-5 py-2 rounded-full border-b-4 border-sky-600 shadow-sm active:translate-y-1 active:border-b-0 transition-all">
                       ✨ MAGIC PICTURE
                     </button>
                   )}
@@ -164,25 +160,25 @@ const FlashcardView: React.FC = () => {
               )}
             </div>
 
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-3">
-                <span className="text-4xl font-black text-gray-800 uppercase tracking-tighter">{currentCard?.word}</span>
-                <button onClick={(e) => { e.stopPropagation(); playSpeech(currentCard!.word); }} className="text-3xl active:scale-125 transition-transform bg-gray-50 p-2 rounded-full">🔊</button>
+            <div className="flex flex-col items-center gap-0">
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-black text-gray-800 uppercase tracking-tighter">{currentCard?.word}</span>
+                <button onClick={(e) => { e.stopPropagation(); playSpeech(currentCard!.word); }} className="text-2xl active:scale-125 transition-transform bg-gray-50 p-1.5 rounded-full">🔊</button>
               </div>
-              <p className="text-[10px] text-gray-300 font-bold uppercase tracking-[0.2em]">Tap to flip</p>
+              <p className="text-[9px] text-gray-300 font-bold uppercase tracking-[0.1em]">Tap to flip</p>
             </div>
           </div>
 
           {/* Back: Persian (Farsi) */}
-          <div className="absolute inset-0 backface-hidden bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[50px] border-[8px] border-white/20 shadow-xl flex flex-col items-center justify-center p-6 rotate-y-180 text-white">
-            <span className="text-7xl mb-4 drop-shadow-2xl opacity-90">⭐</span>
-            <span className="text-6xl font-black mb-8 farsi-text text-white drop-shadow-md" dir="rtl">
+          <div className="absolute inset-0 backface-hidden bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[40px] border-[6px] border-white/20 shadow-lg flex flex-col items-center justify-center p-5 rotate-y-180 text-white">
+            <span className="text-6xl mb-2 drop-shadow-xl opacity-90">⭐</span>
+            <span className="text-5xl font-black mb-6 farsi-text text-white drop-shadow-md" dir="rtl">
               {currentCard?.translation}
             </span>
-            <div className="h-1.5 w-20 bg-white/30 rounded-full mb-8"></div>
+            <div className="h-1 w-16 bg-white/30 rounded-full mb-6"></div>
             <button 
               onClick={(e) => { e.stopPropagation(); playSpeech(currentCard!.word); }}
-              className="bg-white text-indigo-600 px-10 py-4 rounded-full font-black text-2xl shadow-xl flex items-center gap-4 active:scale-95 transition-all"
+              className="bg-white text-indigo-600 px-8 py-3 rounded-full font-black text-xl shadow-lg flex items-center gap-3 active:scale-95 transition-all"
             >
               <span>🔊</span> LISTEN
             </button>
@@ -190,27 +186,28 @@ const FlashcardView: React.FC = () => {
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center gap-3 w-[min(340px,90vw)] mt-6 px-2">
-        <button onClick={handlePrev} className="bg-white w-16 h-16 rounded-[25px] shadow-lg border-b-4 border-gray-100 flex items-center justify-center text-3xl kid-button-press">
+      {/* Controls - Compact */}
+      <div className="flex items-center gap-3 w-[min(310px,85vw)] mt-4 px-1">
+        <button onClick={handlePrev} className="bg-white w-14 h-14 rounded-[20px] shadow-md border-b-4 border-gray-100 flex items-center justify-center text-2xl kid-button-press">
           👈
         </button>
-        <button className="flex-1 h-16 rounded-[25px] font-black text-xl text-white shadow-xl border-b-4 bg-yellow-400 border-yellow-600 kid-button-press">
+        <button className="flex-1 h-14 rounded-[20px] font-black text-lg text-white shadow-lg border-b-4 bg-yellow-400 border-yellow-600 kid-button-press">
           🎙️ SAY IT!
         </button>
-        <button onClick={handleNext} className="bg-white w-16 h-16 rounded-[25px] shadow-lg border-b-4 border-gray-100 flex items-center justify-center text-3xl kid-button-press">
+        <button onClick={handleNext} className="bg-white w-14 h-14 rounded-[20px] shadow-md border-b-4 border-gray-100 flex items-center justify-center text-2xl kid-button-press">
           👉
         </button>
       </div>
 
+      {/* Discover Button - More compact */}
       <button 
         onClick={handleDiscoverMore}
         disabled={isGenerating}
-        className={`w-[min(340px,90vw)] py-5 rounded-[35px] font-black text-xl text-white transition-all flex items-center justify-center gap-4 shadow-xl border-b-4 mt-6 ${
+        className={`w-[min(310px,85vw)] py-4 rounded-[30px] font-black text-lg text-white transition-all flex items-center justify-center gap-3 shadow-lg border-b-4 mt-4 ${
           isGenerating ? 'bg-gray-400 border-gray-500' : 'bg-green-500 border-green-700 kid-button-press'
         }`}
       >
-        {isGenerating ? <span className="animate-spin text-2xl">🌀</span> : '✨ GET 10 NEW WORDS'}
+        {isGenerating ? <span className="animate-spin text-xl">🌀</span> : '✨ GET 10 NEW WORDS'}
       </button>
     </div>
   );
