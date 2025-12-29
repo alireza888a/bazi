@@ -7,7 +7,11 @@
   <title>Little English Explorer</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Explorer">
   <meta name="theme-color" content="#facc15">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3069/3069172.png">
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
@@ -24,6 +28,7 @@
       font-family: 'Quicksand', 'Vazirmatn', sans-serif;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      touch-action: manipulation;
     }
     #root { width: 100%; height: 100%; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -34,6 +39,20 @@
     .rotate-y-180 { transform: rotateY(180deg); }
     .farsi-text { font-family: 'Vazirmatn', sans-serif; }
     .sidebar-transition { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    
+    /* Bubble Animation */
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    .bubble-float { animation: float 3s ease-in-out infinite; }
+    
+    .bubble-style {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0 -5px 10px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.05);
+      border: 2px solid #e0f2fe;
+    }
   </style>
   <script type="importmap">
 {
@@ -52,5 +71,12 @@
 <body>
   <div id="root"></div>
   <script type="module" src="index.tsx"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+  </script>
 </body>
 </html>
