@@ -2,9 +2,12 @@
 {
   "name": "little-english-explorer",
   "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Building static site...'"
+  },
   "dependencies": {
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "@google/genai": "0.3.0"
+    "@google/genai": "0.13.0"
   }
 }
