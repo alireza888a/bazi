@@ -19,12 +19,12 @@ const App: React.FC = () => {
   });
 
   useEffect(() => {
-    // Check safely for API key presence
+    // Safety check for API key
     const checkKey = () => {
       try {
-        const key = (typeof process !== 'undefined' && process.env?.API_KEY) || 
-                    (window as any).process?.env?.API_KEY;
-        if (!key || key === "undefined" || key.length < 5) {
+        const key = (process.env?.API_KEY) || (window as any).process?.env?.API_KEY;
+        // Key should exist and be reasonably long
+        if (!key || key === "undefined" || String(key).length < 10) {
           setShowKeyWarning(true);
         } else {
           setShowKeyWarning(false);
@@ -35,8 +35,7 @@ const App: React.FC = () => {
     };
     
     checkKey();
-    // Re-check periodically in case injection is delayed
-    const timer = setInterval(checkKey, 2000);
+    const timer = setInterval(checkKey, 3000);
     return () => clearInterval(timer);
   }, []);
 
@@ -73,20 +72,20 @@ const App: React.FC = () => {
   return (
     <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
       {showKeyWarning && (
-        <div className="bg-rose-500 text-white p-3 text-[10px] font-black text-center uppercase tracking-tight shadow-lg z-[60] relative border-b-2 border-rose-700">
+        <div className="bg-rose-500 text-white p-3 text-[10px] font-black text-center uppercase tracking-tight shadow-xl z-[60] relative border-b-2 border-rose-700 animate-pulse">
           <div className="flex items-center justify-center gap-2">
             <span>⚠️</span>
-            <span>MAGIC KEY MISSING! PASTE THE CODE IN NETLIFY SETTINGS AND REDEPLOY.</span>
+            <span>MAGIC KEY NOT DETECTED! Set API_KEY in Netlify and Redeploy.</span>
           </div>
         </div>
       )}
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full">
         {renderContent()}
       </div>
 
       {celebration.show && celebration.sticker && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white rounded-[50px] p-8 flex flex-col items-center gap-6 shadow-2xl border-8 border-orange-400 relative animate-in zoom-in duration-500">
+          <div className="bg-white rounded-[50px] p-8 flex flex-col items-center gap-6 shadow-2xl border-8 border-orange-400 relative animate-in zoom-in duration-500 max-w-sm w-full">
             <div className="absolute -top-12 text-6xl">🎉</div>
             <h2 className="text-3xl font-black text-orange-600 text-center">New Sticker!</h2>
             <div className="w-40 h-40 bg-orange-50 rounded-full flex items-center justify-center text-[100px] shadow-inner border-4 border-white animate-bounce">
