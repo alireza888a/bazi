@@ -11,24 +11,21 @@
   <meta name="theme-color" content="#facc15">
 
   <script>
-    // تنظیمات محیطی اولیه برای جلوگیری از خطاهای سیستمی
     window.process = { 
       env: { API_KEY: undefined },
       nextTick: function(fn) { setTimeout(fn, 0); }
     };
 
-    // مانیتورینگ خطا: اگر برنامه لود نشد، دکمه ریفرش نمایش داده شود
     window.onerror = function(msg, url, line, col, error) {
       console.error("Critical Error:", msg);
       const root = document.getElementById('root');
       if (root && (root.innerHTML.includes('loading-fallback') || root.innerHTML === "")) {
         root.innerHTML = `
           <div style="padding: 30px; color: #854d0e; font-family: sans-serif; text-align: center; background: #facc15; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; direction: ltr;">
-            <div style="font-size: 60px; margin-bottom: 20px;">🚧</div>
-            <h2 style="font-weight: 900; font-size: 24px;">SYSTEM UPDATE NEEDED</h2>
-            <p style="font-size: 14px; opacity: 0.8; margin-top: 10px;">The app is refreshing its magic. Please click start.</p>
-            <button onclick="location.reload()" style="margin-top: 25px; padding: 15px 40px; background: white; color: #854d0e; border: none; border-radius: 20px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #ca8a04; font-size: 18px;">START APP</button>
-            <div style="font-size: 10px; color: #ca8a04; margin-top: 40px; opacity: 0.5;">Error: ${msg}</div>
+            <div style="font-size: 60px; margin-bottom: 20px;">🚀</div>
+            <h2 style="font-weight: 900; font-size: 24px;">MAGIC IS READY</h2>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 10px;">Please click the button to start the adventure!</p>
+            <button onclick="location.reload()" style="margin-top: 25px; padding: 15px 40px; background: white; color: #854d0e; border: none; border-radius: 20px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 0 #ca8a04; font-size: 18px;">START ADVENTURE</button>
           </div>
         `;
       }
@@ -74,7 +71,7 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
-    "@google/genai": "https://esm.sh/@google/genai@0.2.1",
+    "@google/genai": "https://esm.sh/@google/genai@0.3.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/"
   }
@@ -85,8 +82,8 @@
   <div id="root">
     <div class="loading-fallback">
       <div class="text-8xl animate-bounce-slow mb-6">🚀</div>
-      <div class="text-2xl font-black uppercase tracking-widest">Starting Adventure...</div>
-      <div class="text-[10px] mt-8 opacity-40 font-mono">STABLE ENGINE: 18.2.0</div>
+      <div class="text-2xl font-black uppercase tracking-widest">Loading Magic...</div>
+      <div class="text-[10px] mt-8 opacity-40 font-mono">ENGINE: REACT 18.2 + GENAI 0.3.0</div>
     </div>
   </div>
   <script type="module" src="index.tsx"></script>
