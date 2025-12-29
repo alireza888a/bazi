@@ -7,6 +7,7 @@ import GameView from './components/GameView';
 import AIChatView from './components/AIChatView';
 import AwardsView from './components/AwardsView';
 import DrawingView from './components/DrawingView';
+import GardenView from './components/GardenView';
 import { AppTab, Sticker } from './types';
 import { ALL_STICKERS } from './constants';
 
@@ -68,6 +69,7 @@ const App: React.FC = () => {
       case AppTab.AI_CHAT: return <AIChatView />;
       case AppTab.AWARDS: return <AwardsView />;
       case AppTab.DRAW: return <DrawingView />;
+      case AppTab.GARDEN: return <GardenView />;
       default: return <FlashcardView />;
     }
   };

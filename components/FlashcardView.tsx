@@ -1,11 +1,12 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { INITIAL_FLASHCARDS, CATEGORIES } from '../constants';
-import { Flashcard } from '../types';
+import { Flashcard, GardenPlant } from '../types';
 import { playSpeech, generateCartoonImage, fetchNewWordCurriculum } from '../services/geminiService';
 import { getImageLocal } from '../services/dbService';
 
 const STORAGE_KEY = 'explorer_dynamic_cards_v3';
+const GARDEN_KEY = 'explorer_garden_v1';
 
 const FlashcardView: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('animals');
@@ -44,6 +45,26 @@ const FlashcardView: React.FC = () => {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dynamicCards));
   }, [dynamicCards]);
+
+  // Log to garden when card is viewed
+  useEffect(() => {
+    if (currentCard) {
+      const savedGarden = localStorage.getItem(GARDEN_KEY);
+      let garden: GardenPlant[] = savedGarden ? JSON.parse(savedGarden) : [];
+      
+      if (!garden.some(p => p.wordId === currentCard.id)) {
+        const newPlant: GardenPlant = {
+          wordId: currentCard.id,
+          word: currentCard.word,
+          emoji: currentCard.emoji,
+          growthLevel: 1,
+          lastWatered: Date.now()
+        };
+        garden.push(newPlant);
+        localStorage.setItem(GARDEN_KEY, JSON.stringify(garden));
+      }
+    }
+  }, [currentCard]);
 
   useEffect(() => {
     const loadImg = async () => {

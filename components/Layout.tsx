@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab }) =>
           Learn, Play & Discover
         </p>
 
-        {/* Menu Toggle Button - Slightly adjusted position */}
+        {/* Menu Toggle Button */}
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="absolute -bottom-4 right-6 w-9 h-9 bg-white rounded-full shadow-lg border-[3px] border-[#facc15] flex items-center justify-center text-base active:scale-90 transition-transform z-50"
@@ -50,10 +50,14 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab }) =>
       )}
 
       {/* Sidebar Drawer */}
-      <div className={`fixed top-0 right-0 h-full w-20 bg-white z-[70] shadow-[-10px_0_30px_rgba(0,0,0,0.05)] flex flex-col items-center py-16 gap-6 sidebar-transition overflow-y-auto no-scrollbar ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed top-0 right-0 h-full w-20 bg-white z-[70] shadow-[-10px_0_30px_rgba(0,0,0,0.05)] flex flex-col items-center py-16 gap-5 sidebar-transition overflow-y-auto no-scrollbar ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <NavButton 
           label="LEARN" icon="🖼️" isActive={activeTab === AppTab.CARDS} 
           onClick={() => handleTabChange(AppTab.CARDS)} color="bg-[#38bdf8]"
+        />
+        <NavButton 
+          label="GARDEN" icon="🪴" isActive={activeTab === AppTab.GARDEN} 
+          onClick={() => handleTabChange(AppTab.GARDEN)} color="bg-[#22c55e]"
         />
         <NavButton 
           label="ABC" icon="🔤" isActive={activeTab === AppTab.ALPHABET} 

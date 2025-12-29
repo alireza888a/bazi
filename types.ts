@@ -42,5 +42,14 @@ export enum AppTab {
   AI_CHAT = 'ai_chat',
   AWARDS = 'awards',
   ALPHABET = 'alphabet',
-  DRAW = 'draw'
+  DRAW = 'draw',
+  GARDEN = 'garden'
+}
+
+export interface GardenPlant {
+  wordId: string;
+  word: string;
+  emoji: string;
+  growthLevel: number; // 1 to 4
+  lastWatered: number;
 }
