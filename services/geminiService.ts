@@ -2,12 +2,23 @@
 import { GoogleGenAI, GenerateContentResponse, Type } from "@google/genai";
 import { getImageLocal, saveImageLocal } from "./dbService";
 
+// Helper to safely get the API key from potential window.process or other global injections
+const getApiKey = () => {
+  try {
+    // Check various common places where the key might be injected
+    const key = (typeof process !== 'undefined' && process.env?.API_KEY) || 
+                (window as any).process?.env?.API_KEY;
+    return key?.trim();
+  } catch (e) {
+    return undefined;
+  }
+};
+
 const getAI = () => {
-  // این بخش از متغیر محیطی که شما در نتلیفای ست کردید استفاده می‌کند
-  const apiKey = process.env.API_KEY?.trim();
+  const apiKey = getApiKey();
   
   if (!apiKey || apiKey === "undefined" || apiKey.length < 10) {
-    console.error("⚠️ API_KEY is missing! Make sure it's set correctly in Netlify.");
+    console.error("⚠️ API_KEY is missing! Make sure it's set in Netlify.");
     throw new Error("MISSING_API_KEY");
   }
   return new GoogleGenAI({ apiKey });

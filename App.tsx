@@ -19,13 +19,25 @@ const App: React.FC = () => {
   });
 
   useEffect(() => {
-    // Check if API_KEY is missing or just the placeholder string
-    const key = process.env.API_KEY;
-    if (!key || key === "undefined" || key.length < 5) {
-      setShowKeyWarning(true);
-    } else {
-      setShowKeyWarning(false);
-    }
+    // Check safely for API key presence
+    const checkKey = () => {
+      try {
+        const key = (typeof process !== 'undefined' && process.env?.API_KEY) || 
+                    (window as any).process?.env?.API_KEY;
+        if (!key || key === "undefined" || key.length < 5) {
+          setShowKeyWarning(true);
+        } else {
+          setShowKeyWarning(false);
+        }
+      } catch (e) {
+        setShowKeyWarning(true);
+      }
+    };
+    
+    checkKey();
+    // Re-check periodically in case injection is delayed
+    const timer = setInterval(checkKey, 2000);
+    return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {

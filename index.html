@@ -19,6 +19,12 @@
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3069/3069172.png">
   
   <title>Little English Explorer</title>
+  
+  <!-- Process Shim to prevent "process is not defined" error in browser -->
+  <script>
+    window.process = window.process || { env: {} };
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
@@ -30,7 +36,7 @@
       width: 100%;
       overflow: hidden;
       position: fixed;
-      background-color: #f1f5f9;
+      background-color: #f8fafc;
     }
     body {
       font-family: 'Quicksand', 'Vazirmatn', 'Tahoma', sans-serif;
@@ -135,5 +141,7 @@
 </head>
 <body>
   <div id="root"></div>
+  <!-- Entry point for the application -->
+  <script type="module" src="index.tsx"></script>
 </body>
 </html>
