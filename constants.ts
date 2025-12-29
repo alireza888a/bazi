@@ -3,9 +3,14 @@ import { Flashcard, Sticker, BubblesItem } from './types';
 
 export const CATEGORIES = [
   { id: 'animals', name: 'Animals', icon: '🦁', color: 'bg-orange-400' },
+  { id: 'actions', name: 'Actions', icon: '🏃', color: 'bg-yellow-500' },
+  { id: 'opposites', name: 'Opposites', icon: '⚖️', color: 'bg-indigo-500' },
   { id: 'body', name: 'Body', icon: '💪', color: 'bg-pink-400' },
   { id: 'fruits', name: 'Fruits', icon: '🍎', color: 'bg-red-400' },
   { id: 'home', name: 'Home', icon: '🏠', color: 'bg-blue-400' },
+  { id: 'daily', name: 'My Day', icon: '☀️', color: 'bg-emerald-500' },
+  { id: 'insects', name: 'Bugs', icon: '🦋', color: 'bg-lime-400' },
+  { id: 'positions', name: 'Where?', icon: '📦', color: 'bg-violet-400' },
   { id: 'music', name: 'Music', icon: '🎸', color: 'bg-purple-400' },
   { id: 'vehicles', name: 'Vehicles', icon: '🚀', color: 'bg-sky-400' },
   { id: 'nature', name: 'Nature', icon: '🌈', color: 'bg-green-400' },
@@ -31,130 +36,63 @@ export const INITIAL_FLASHCARDS: Flashcard[] = [
   { id: 'a3', word: 'Monkey', translation: 'میمون', category: 'animals', emoji: '🐒' },
   { id: 'a4', word: 'Dog', translation: 'سگ', category: 'animals', emoji: '🐶' },
   { id: 'a5', word: 'Rabbit', translation: 'خرگوش', category: 'animals', emoji: '🐰' },
+  { id: 'a6', word: 'Cat', translation: 'گربه', category: 'animals', emoji: '🐱' },
+  { id: 'a7', word: 'Giraffe', translation: 'زرافه', category: 'animals', emoji: '🦒' },
 
-  // 2. Body (Fixed accuracy)
+  // 2. Actions
+  { id: 'ac1', word: 'Run', translation: 'دویدن', category: 'actions', emoji: '🏃' },
+  { id: 'ac2', word: 'Jump', translation: 'پریدن', category: 'actions', emoji: '🦘' },
+  { id: 'ac3', word: 'Sleep', translation: 'خوابیدن', category: 'actions', emoji: '😴' },
+  { id: 'ac4', word: 'Eat', translation: 'خوردن', category: 'actions', emoji: '😋' },
+  { id: 'ac5', word: 'Dance', translation: 'رقصیدن', category: 'actions', emoji: '💃' },
+  { id: 'ac6', word: 'Walk', translation: 'راه رفتن', category: 'actions', emoji: '🚶' },
+  { id: 'ac7', word: 'Swim', translation: 'شنا کردن', category: 'actions', emoji: '🏊' },
+
+  // 3. Opposites
+  { id: 'op1', word: 'Big', translation: 'بزرگ', category: 'opposites', emoji: '🐘' },
+  { id: 'op2', word: 'Small', translation: 'کوچک', category: 'opposites', emoji: '🐭' },
+  { id: 'op3', word: 'Hot', translation: 'داغ', category: 'opposites', emoji: '🔥' },
+  { id: 'op4', word: 'Cold', translation: 'سرد', category: 'opposites', emoji: '❄️' },
+  { id: 'op5', word: 'Fast', translation: 'سریع', category: 'opposites', emoji: '🏎️' },
+  { id: 'op6', word: 'Slow', translation: 'آهسته', category: 'opposites', emoji: '🐢' },
+  { id: 'op7', word: 'Up', translation: 'بالا', category: 'opposites', emoji: '⬆️' },
+  { id: 'op8', word: 'Down', translation: 'پایین', category: 'opposites', emoji: '⬇️' },
+
+  // 4. Daily Routine
+  { id: 'dr1', word: 'Brush', translation: 'مسواک زدن', category: 'daily', emoji: '🪥' },
+  { id: 'dr2', word: 'Wash', translation: 'شستن', category: 'daily', emoji: '🧼' },
+  { id: 'dr3', word: 'Drink', translation: 'نوشیدن', category: 'daily', emoji: '🥤' },
+  { id: 'dr4', word: 'Read', translation: 'خواندن', category: 'daily', emoji: '📚' },
+  { id: 'dr5', word: 'Play', translation: 'بازی کردن', category: 'daily', emoji: '🧸' },
+  { id: 'dr6', word: 'Wake up', translation: 'بیدار شدن', category: 'daily', emoji: '⏰' },
+
+  // 5. Insects
+  { id: 'in1', word: 'Bee', translation: 'زنبور', category: 'insects', emoji: '🐝' },
+  { id: 'in2', word: 'Butterfly', translation: 'پروانه', category: 'insects', emoji: '🦋' },
+  { id: 'in3', word: 'Ant', translation: 'مورچه', category: 'insects', emoji: '🐜' },
+  { id: 'in4', word: 'Spider', translation: 'عنکبوت', category: 'insects', emoji: '🕷️' },
+  { id: 'in5', word: 'Ladybug', translation: 'کفشدوزک', category: 'insects', emoji: '🐞' },
+
+  // 6. Positions
+  { id: 'po1', word: 'In', translation: 'داخل', category: 'positions', emoji: '📥' },
+  { id: 'po2', word: 'On', translation: 'رویِ', category: 'positions', emoji: '🔝' },
+  { id: 'po3', word: 'Under', translation: 'زیرِ', category: 'positions', emoji: '👇' },
+  { id: 'po4', word: 'Behind', translation: 'پشتِ', category: 'positions', emoji: '🔙' },
+  { id: 'po5', word: 'Next to', translation: 'کنارِ', category: 'positions', emoji: '➡️' },
+
+  // More variety
   { id: 'b1', word: 'Eye', translation: 'چشم', category: 'body', emoji: '👁️' },
   { id: 'b2', word: 'Ear', translation: 'گوش', category: 'body', emoji: '👂' },
   { id: 'b3', word: 'Nose', translation: 'بینی', category: 'body', emoji: '👃' },
   { id: 'b4', word: 'Mouth', translation: 'دهان', category: 'body', emoji: '👄' },
   { id: 'b5', word: 'Hand', translation: 'دست', category: 'body', emoji: '✋' },
-  { id: 'b6', word: 'Foot', translation: 'پا', category: 'body', emoji: '🦶' },
-  { id: 'b7', word: 'Stomach', translation: 'شکم', category: 'body', emoji: '🧍' },
-  { id: 'b8', word: 'Neck', translation: 'گردن', category: 'body', emoji: '🧣' },
-
-  // 3. Fruits
   { id: 'f1', word: 'Apple', translation: 'سیب', category: 'fruits', emoji: '🍎' },
   { id: 'f2', word: 'Banana', translation: 'موز', category: 'fruits', emoji: '🍌' },
-  { id: 'f3', word: 'Orange', translation: 'پرتقال', category: 'fruits', emoji: '🍊' },
-  { id: 'f4', word: 'Strawberry', translation: 'توت فرنگی', category: 'fruits', emoji: '🍓' },
-  { id: 'f5', word: 'Watermelon', translation: 'هندوانه', category: 'fruits', emoji: '🍉' },
-
-  // 4. Home
-  { id: 'h1', word: 'Bed', translation: 'تخت خواب', category: 'home', emoji: '🛏️' },
-  { id: 'h2', word: 'Chair', translation: 'صندلی', category: 'home', emoji: '🪑' },
-  { id: 'h3', word: 'Door', translation: 'در', category: 'home', emoji: '🚪' },
-  { id: 'h4', word: 'Window', translation: 'پنجره', category: 'home', emoji: '🪟' },
-  { id: 'h5', word: 'Lamp', translation: 'چراغ', category: 'home', emoji: '💡' },
-
-  // 5. Music
-  { id: 'm1', word: 'Guitar', translation: 'گیتار', category: 'music', emoji: '🎸' },
-  { id: 'm2', word: 'Piano', translation: 'پیانو', category: 'music', emoji: '🎹' },
-  { id: 'm3', word: 'Drum', translation: 'طبل', category: 'music', emoji: '🥁' },
-  { id: 'm4', word: 'Violin', translation: 'ویولن', category: 'music', emoji: '🎻' },
-
-  // 6. Vehicles
-  { id: 'v1', word: 'Car', translation: 'ماشین', category: 'vehicles', emoji: '🚗' },
-  { id: 'v2', word: 'Plane', translation: 'هواپیما', category: 'vehicles', emoji: '✈️' },
-  { id: 'v3', word: 'Bike', translation: 'دوچرخه', category: 'vehicles', emoji: '🚲' },
-  { id: 'v4', word: 'Boat', translation: 'قایق', category: 'vehicles', emoji: '⛵' },
-  { id: 'v5', word: 'Truck', translation: 'کامیون', category: 'vehicles', emoji: '🚚' },
-
-  // 7. Nature
-  { id: 'n1', word: 'Sun', translation: 'خورشید', category: 'nature', emoji: '☀️' },
-  { id: 'n2', word: 'Moon', translation: 'ماه', category: 'nature', emoji: '🌙' },
-  { id: 'n3', word: 'Tree', translation: 'درخت', category: 'nature', emoji: '🌳' },
-  { id: 'n4', word: 'Flower', translation: 'گل', category: 'nature', emoji: '🌸' },
-  { id: 'n5', word: 'Rainbow', translation: 'رنگین کمان', category: 'nature', emoji: '🌈' },
-
-  // 8. Toys
-  { id: 't1', word: 'Ball', translation: 'توپ', category: 'toys', emoji: '⚽' },
-  { id: 't2', word: 'Doll', translation: 'عروسک', category: 'toys', emoji: '🪆' },
-  { id: 't3', word: 'Robot', translation: 'آدم آهنی', category: 'toys', emoji: '🤖' },
-  { id: 't4', word: 'Blocks', translation: 'مکعب سازی', category: 'toys', emoji: '🧱' },
-
-  // 9. Food
-  { id: 'fd1', word: 'Milk', translation: 'شیر خوراکی', category: 'food', emoji: '🥛' },
-  { id: 'fd2', word: 'Bread', translation: 'نان', category: 'food', emoji: '🍞' },
-  { id: 'fd3', word: 'Egg', translation: 'تخم مرغ', category: 'food', emoji: '🥚' },
-  { id: 'fd4', word: 'Pizza', translation: 'پیتزا', category: 'food', emoji: '🍕' },
-  { id: 'fd5', word: 'Cake', translation: 'کیک', category: 'food', emoji: '🍰' },
-
-  // 10. Space
-  { id: 'sp1', word: 'Rocket', translation: 'موشک فضایی', category: 'space', emoji: '🚀' },
-  { id: 'sp2', word: 'Star', translation: 'ستاره', category: 'space', emoji: '⭐' },
-  { id: 'sp3', word: 'Earth', translation: 'زمین', category: 'space', emoji: '🌍' },
-  { id: 'sp4', word: 'Astronaut', translation: 'فضانورد', category: 'space', emoji: '👨‍🚀' },
-
-  // 11. Ocean
-  { id: 'oc1', word: 'Fish', translation: 'ماهی', category: 'ocean', emoji: '🐟' },
-  { id: 'oc2', word: 'Whale', translation: 'نهنگ', category: 'ocean', emoji: '🐋' },
-  { id: 'oc3', word: 'Octopus', translation: 'هشت پا', category: 'ocean', emoji: '🐙' },
-  { id: 'oc4', word: 'Shark', translation: 'کوسه', category: 'ocean', emoji: '🦈' },
-
-  // 12. Clothes
-  { id: 'cl1', word: 'Shirt', translation: 'پیراهن', category: 'clothes', emoji: '👕' },
-  { id: 'cl2', word: 'Hat', translation: 'کلاه', category: 'clothes', emoji: '🧢' },
-  { id: 'cl3', word: 'Shoes', translation: 'کفش', category: 'clothes', emoji: '👟' },
-  { id: 'cl4', word: 'Socks', translation: 'جوراب', category: 'clothes', emoji: '🧦' },
-
-  // 13. Colors
   { id: 'co1', word: 'Red', translation: 'قرمز', category: 'colors', emoji: '🔴' },
   { id: 'co2', word: 'Blue', translation: 'آبی', category: 'colors', emoji: '🔵' },
   { id: 'co3', word: 'Green', translation: 'سبز', category: 'colors', emoji: '🟢' },
-  { id: 'co4', word: 'Yellow', translation: 'زرد', category: 'colors', emoji: '🟡' },
-  { id: 'co5', word: 'Pink', translation: 'صورتی', category: 'colors', emoji: '💗' },
-
-  // 14. Shapes
   { id: 'sh1', word: 'Circle', translation: 'دایره', category: 'shapes', emoji: '⭕' },
-  { id: 'sh2', word: 'Square', translation: 'مربع', category: 'shapes', emoji: '⬛' },
-  { id: 'sh3', word: 'Triangle', translation: 'مثلث', category: 'shapes', emoji: '🔺' },
-  { id: 'sh4', word: 'Heart', translation: 'قلب', category: 'shapes', emoji: '❤️' },
-
-  // 15. Weather
-  { id: 'we1', word: 'Rain', translation: 'باران', category: 'weather', emoji: '🌧️' },
-  { id: 'we2', word: 'Snow', translation: 'برف', category: 'weather', emoji: '❄️' },
-  { id: 'we3', word: 'Cloud', translation: 'ابر', category: 'weather', emoji: '☁️' },
-  { id: 'we4', word: 'Sun', translation: 'آفتاب', category: 'weather', emoji: '☀️' },
-
-  // 16. Sports
-  { id: 'sr1', word: 'Football', translation: 'فوتبال', category: 'sports', emoji: '⚽' },
-  { id: 'sr2', word: 'Swimming', translation: 'شنا', category: 'sports', emoji: '🏊' },
-  { id: 'sr3', word: 'Tennis', translation: 'تنیس', category: 'sports', emoji: '🎾' },
-  { id: 'sr4', word: 'Basketball', translation: 'بسکتبال', category: 'sports', emoji: '🏀' },
-
-  // 17. Jobs
-  { id: 'jb1', word: 'Doctor', translation: 'دکتر', category: 'jobs', emoji: '👨‍⚕️' },
-  { id: 'jb2', word: 'Teacher', translation: 'معلم', category: 'jobs', emoji: '👩‍🏫' },
-  { id: 'jb3', word: 'Chef', translation: 'آشپز', category: 'jobs', emoji: '👨‍🍳' },
-  { id: 'jb4', word: 'Fireman', translation: 'آتشنشان', category: 'jobs', emoji: '👨‍🚒' },
-
-  // 18. Farm
-  { id: 'fm1', word: 'Cow', translation: 'گاو', category: 'farm', emoji: '🐮' },
-  { id: 'fm2', word: 'Sheep', translation: 'گوسفند', category: 'farm', emoji: '🐑' },
-  { id: 'fm3', word: 'Chicken', translation: 'جوجه', category: 'farm', emoji: '🐥' },
-  { id: 'fm4', word: 'Tractor', translation: 'تراکتور', category: 'farm', emoji: '🚜' },
-
-  // 19. Emotions
-  { id: 'em1', word: 'Happy', translation: 'خوشحال', category: 'emotions', emoji: '😊' },
-  { id: 'em2', word: 'Sad', translation: 'ناراحت', category: 'emotions', emoji: '😢' },
-  { id: 'em3', word: 'Angry', translation: 'عصبانی', category: 'emotions', emoji: '😡' },
-  { id: 'em4', word: 'Scared', translation: 'ترسیده', category: 'emotions', emoji: '😨' },
-
-  // 20. School
-  { id: 'sl1', word: 'Book', translation: 'کتاب', category: 'school', emoji: '📖' },
-  { id: 'sl2', word: 'Pencil', translation: 'مداد', category: 'school', emoji: '✏️' },
-  { id: 'sl3', word: 'Bag', translation: 'کیف مدرسه', category: 'school', emoji: '🎒' },
-  { id: 'sl4', word: 'Ruler', translation: 'خط کش', category: 'school', emoji: '📏' },
+  { id: 'sh2', word: 'Square', translation: 'مربع', category: 'shapes', emoji: '🟦' },
 ];
 
 export const BUBBLES_ITEMS: BubblesItem[] = [

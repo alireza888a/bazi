@@ -1,8 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { INITIAL_FLASHCARDS, CATEGORIES } from '../constants';
 import { Flashcard } from '../types';
 import { playSpeech } from '../services/geminiService';
+
+const STORAGE_KEY = 'explorer_dynamic_cards_v3';
 
 enum GameType {
   MENU = 'menu',
@@ -23,6 +25,19 @@ const GameView: React.FC = () => {
   const [memoryCards, setMemoryCards] = useState<{id: string, emoji: string, isFlipped: boolean, isMatched: boolean}[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   
+  // Combine Initial and Dynamically Learned Cards for massive variety
+  const allAvailableCards = useMemo(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const initialIds = new Set(INITIAL_FLASHCARDS.map(c => c.id));
+        return [...INITIAL_FLASHCARDS, ...parsed.filter((c: any) => !initialIds.has(c.id))];
+      } catch (e) { return INITIAL_FLASHCARDS; }
+    }
+    return INITIAL_FLASHCARDS;
+  }, [activeGame]); // Reload cards when returning to menu or starting a game
+
   // Letter Pop specific state
   const [spellingProgress, setSpellingProgress] = useState<number>(0);
   const [scrambledLetters, setScrambledLetters] = useState<{char: string, id: number, popped: boolean, delay: number}[]>([]);
@@ -40,21 +55,24 @@ const GameView: React.FC = () => {
 
   const generateNewRound = (type: GameType) => {
     setIsCorrect(null);
-    const shuffled = [...INITIAL_FLASHCARDS].sort(() => 0.5 - Math.random());
+    const shuffled = [...allAvailableCards].sort(() => 0.5 - Math.random());
     
     switch (type) {
       case GameType.WORD_TO_EMOJI:
       case GameType.FARSI_TO_EMOJI:
       case GameType.SOUND_TO_EMOJI:
         const target = shuffled[0];
-        const options = shuffled.slice(0, 4).sort(() => 0.5 - Math.random());
+        // Ensure options are diverse but potentially from the same category for challenge
+        const sameCat = allAvailableCards.filter(c => c.category === target.category && c.id !== target.id);
+        const distractors = [...sameCat, ...shuffled.slice(1)].sort(() => 0.5 - Math.random()).slice(0, 3);
+        const options = [target, ...distractors].sort(() => 0.5 - Math.random());
         setQuestion({ target, options });
         if (type === GameType.SOUND_TO_EMOJI) playSpeech(target.word);
         break;
 
       case GameType.ODD_ONE_OUT:
         const validCats = CATEGORIES.filter(cat => 
-          INITIAL_FLASHCARDS.filter(c => c.category === cat.id).length >= 3
+          allAvailableCards.filter(c => c.category === cat.id).length >= 3
         );
         if (validCats.length < 2) {
           setActiveGame(GameType.MENU);
@@ -63,32 +81,34 @@ const GameView: React.FC = () => {
         const cat1 = validCats[Math.floor(Math.random() * validCats.length)].id;
         let cat2 = validCats[Math.floor(Math.random() * validCats.length)].id;
         while (cat2 === cat1) cat2 = validCats[Math.floor(Math.random() * validCats.length)].id;
-        const mainItems = INITIAL_FLASHCARDS.filter(c => c.category === cat1).sort(() => 0.5 - Math.random()).slice(0, 3);
-        const oddItem = INITIAL_FLASHCARDS.filter(c => c.category === cat2).sort(() => 0.5 - Math.random())[0];
+        const mainItems = allAvailableCards.filter(c => c.category === cat1).sort(() => 0.5 - Math.random()).slice(0, 3);
+        const oddItem = allAvailableCards.filter(c => c.category === cat2).sort(() => 0.5 - Math.random())[0];
         setQuestion({ target: oddItem, options: [...mainItems, oddItem].sort(() => 0.5 - Math.random()) });
         break;
 
       case GameType.SORTING:
-        const sValidCats = CATEGORIES.filter(cat => INITIAL_FLASHCARDS.some(c => c.category === cat.id));
+        const sValidCats = CATEGORIES.filter(cat => allAvailableCards.some(c => c.category === cat.id));
         const sortCat1 = sValidCats[Math.floor(Math.random() * sValidCats.length)];
         let sortCat2 = sValidCats[Math.floor(Math.random() * sValidCats.length)];
         while (sortCat2.id === sortCat1.id) sortCat2 = sValidCats[Math.floor(Math.random() * sValidCats.length)];
         
-        const possibleItems = INITIAL_FLASHCARDS.filter(c => c.category === sortCat1.id || c.category === sortCat2.id);
+        const possibleItems = allAvailableCards.filter(c => c.category === sortCat1.id || c.category === sortCat2.id);
         const currentItem = possibleItems[Math.floor(Math.random() * possibleItems.length)];
         
         setQuestion({ target: currentItem, options: [sortCat1, sortCat2] });
         break;
 
       case GameType.LETTER_POP:
-        const wordTarget = shuffled[0];
+        // Prefer shorter words for Letter Pop to avoid frustration
+        const suitableWords = shuffled.filter(c => c.word.length <= 6);
+        const wordTarget = suitableWords.length > 0 ? suitableWords[0] : shuffled[0];
         const letters = wordTarget.word.toUpperCase().split('');
         const scrambled = letters
           .map((char, i) => ({ 
             char, 
             id: i, 
             popped: false,
-            delay: Math.random() * 2 // Random delay for float animation offset
+            delay: Math.random() * 2 
           }))
           .sort(() => 0.5 - Math.random());
         setScrambledLetters(scrambled);
@@ -251,7 +271,7 @@ const GameView: React.FC = () => {
                </button>
              ))}
           </div>
-          <div className="h-10"></div> {/* Spacer */}
+          <div className="h-10"></div> 
         </div>
       ) : activeGame === GameType.SORTING ? (
         <div className="flex flex-col gap-10 flex-1 items-center">
