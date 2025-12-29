@@ -8,8 +8,15 @@
   <!-- PWA / Mobile Web App Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Explorer">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#facc15"> <!-- Yellow-400 color -->
+  <meta name="theme-color" content="#facc15">
+  
+  <!-- Manifest for installation -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3069/3069172.png">
   
   <title>Little English Explorer</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -23,11 +30,10 @@
       width: 100%;
       overflow: hidden;
       position: fixed;
-      background-color: #facc15; /* Match header for smooth loading */
+      background-color: #f1f5f9;
     }
     body {
       font-family: 'Quicksand', 'Vazirmatn', 'Tahoma', sans-serif;
-      background-color: #f8fafc;
       margin: 0;
       padding: 0;
       display: flex;
