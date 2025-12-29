@@ -40,5 +40,7 @@ export enum AppTab {
   CARDS = 'cards',
   GAME = 'game',
   AI_CHAT = 'ai_chat',
-  AWARDS = 'awards'
+  AWARDS = 'awards',
+  ALPHABET = 'alphabet',
+  DRAW = 'draw'
 }

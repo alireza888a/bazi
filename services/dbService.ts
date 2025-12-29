@@ -3,7 +3,11 @@ const DB_NAME = 'LittleExplorerDB';
 const STORE_NAME = 'images';
 const DB_VERSION = 1;
 
+let dbInstance: IDBDatabase | null = null;
+
 export const initDB = (): Promise<IDBDatabase> => {
+  if (dbInstance) return Promise.resolve(dbInstance);
+
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
@@ -14,29 +18,41 @@ export const initDB = (): Promise<IDBDatabase> => {
       }
     };
 
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => {
+      dbInstance = request.result;
+      resolve(dbInstance);
+    };
     request.onerror = () => reject(request.error);
   });
 };
 
 export const saveImageLocal = async (id: string, base64: string): Promise<void> => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.put(base64, id);
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
+  try {
+    const db = await initDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.put(base64, id);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  } catch (e) {
+    console.error("Failed to save image to DB", e);
+  }
 };
 
 export const getImageLocal = async (id: string): Promise<string | null> => {
-  const db = await initDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readonly');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.get(id);
-    request.onsuccess = () => resolve(request.result || null);
-    request.onerror = () => reject(request.error);
-  });
+  try {
+    const db = await initDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.get(id);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+  } catch (e) {
+    console.error("Failed to get image from DB", e);
+    return null;
+  }
 };

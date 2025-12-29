@@ -5,26 +5,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Little English Explorer</title>
-  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#facc15">
-
-  <script>
-    window.process = { 
-      env: { API_KEY: undefined },
-      nextTick: function(fn) { setTimeout(fn, 0); }
-    };
-  </script>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
-  
   <style>
+    :root {
+      --app-height: 100dvh;
+    }
     html, body {
-      height: 100%;
+      height: var(--app-height);
       width: 100%;
-      overflow: hidden; /* بدنه اصلی ثابت می‌ماند */
+      overflow: hidden;
       background-color: #ffffff;
       margin: 0;
       padding: 0;
@@ -33,17 +26,15 @@
       user-select: none;
     }
     #root { width: 100%; height: 100%; }
-    
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
     .perspective-1000 { perspective: 1000px; }
     .preserve-3d { transform-style: preserve-3d; }
     .backface-hidden { backface-visibility: hidden; }
     .rotate-y-180 { transform: rotateY(180deg); }
     .farsi-text { font-family: 'Vazirmatn', sans-serif; }
+    .sidebar-transition { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
   </style>
-
   <script type="importmap">
 {
   "imports": {

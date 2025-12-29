@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import FlashcardView from './components/FlashcardView';
+import AlphabetView from './components/AlphabetView';
 import GameView from './components/GameView';
 import AIChatView from './components/AIChatView';
 import AwardsView from './components/AwardsView';
+import DrawingView from './components/DrawingView';
 import { AppTab, Sticker } from './types';
 import { ALL_STICKERS } from './constants';
 
@@ -23,7 +25,6 @@ const App: React.FC = () => {
     const checkKey = () => {
       try {
         const key = (process.env?.API_KEY) || (window as any).process?.env?.API_KEY;
-        // Key should exist and be reasonably long
         if (!key || key === "undefined" || String(key).length < 10) {
           setShowKeyWarning(true);
         } else {
@@ -62,9 +63,11 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case AppTab.CARDS: return <FlashcardView />;
+      case AppTab.ALPHABET: return <AlphabetView />;
       case AppTab.GAME: return <GameView />;
       case AppTab.AI_CHAT: return <AIChatView />;
       case AppTab.AWARDS: return <AwardsView />;
+      case AppTab.DRAW: return <DrawingView />;
       default: return <FlashcardView />;
     }
   };
