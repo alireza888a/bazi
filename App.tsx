@@ -12,12 +12,22 @@ const STICKER_KEY = 'explorer_stickers_v1';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AppTab>(AppTab.CARDS);
+  const [showKeyWarning, setShowKeyWarning] = useState(false);
   const [celebration, setCelebration] = useState<{show: boolean, sticker: Sticker | null}>({
     show: false,
     sticker: null
   });
 
-  // Listen for custom events to unlock stickers from any component
+  useEffect(() => {
+    // Check if API_KEY is missing or just the placeholder string
+    const key = process.env.API_KEY;
+    if (!key || key === "undefined" || key.length < 5) {
+      setShowKeyWarning(true);
+    } else {
+      setShowKeyWarning(false);
+    }
+  }, []);
+
   useEffect(() => {
     const handleUnlock = (e: any) => {
       const stickerId = e.detail.id;
@@ -40,26 +50,28 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case AppTab.CARDS:
-        return <FlashcardView />;
-      case AppTab.GAME:
-        return <GameView />;
-      case AppTab.AI_CHAT:
-        return <AIChatView />;
-      case AppTab.AWARDS:
-        return <AwardsView />;
-      default:
-        return <FlashcardView />;
+      case AppTab.CARDS: return <FlashcardView />;
+      case AppTab.GAME: return <GameView />;
+      case AppTab.AI_CHAT: return <AIChatView />;
+      case AppTab.AWARDS: return <AwardsView />;
+      default: return <FlashcardView />;
     }
   };
 
   return (
     <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
+      {showKeyWarning && (
+        <div className="bg-rose-500 text-white p-3 text-[10px] font-black text-center uppercase tracking-tight shadow-lg z-[60] relative border-b-2 border-rose-700">
+          <div className="flex items-center justify-center gap-2">
+            <span>⚠️</span>
+            <span>MAGIC KEY MISSING! PASTE THE CODE IN NETLIFY SETTINGS AND REDEPLOY.</span>
+          </div>
+        </div>
+      )}
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
         {renderContent()}
       </div>
 
-      {/* Celebration Modal */}
       {celebration.show && celebration.sticker && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white rounded-[50px] p-8 flex flex-col items-center gap-6 shadow-2xl border-8 border-orange-400 relative animate-in zoom-in duration-500">
@@ -78,22 +90,6 @@ const App: React.FC = () => {
             >
               WOW! THANKS! 🤩
             </button>
-          </div>
-          {/* Simple particle effect placeholder */}
-          <div className="fixed inset-0 pointer-events-none">
-            {[...Array(20)].map((_, i) => (
-              <div 
-                key={i} 
-                className="absolute text-2xl animate-ping"
-                style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 2}s`
-                }}
-              >
-                ✨
-              </div>
-            ))}
           </div>
         </div>
       )}

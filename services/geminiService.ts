@@ -2,9 +2,17 @@
 import { GoogleGenAI, GenerateContentResponse, Type } from "@google/genai";
 import { getImageLocal, saveImageLocal } from "./dbService";
 
-const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY! });
+const getAI = () => {
+  // این بخش از متغیر محیطی که شما در نتلیفای ست کردید استفاده می‌کند
+  const apiKey = process.env.API_KEY?.trim();
+  
+  if (!apiKey || apiKey === "undefined" || apiKey.length < 10) {
+    console.error("⚠️ API_KEY is missing! Make sure it's set correctly in Netlify.");
+    throw new Error("MISSING_API_KEY");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
-// Memory cache for current session speed
 const memoryImageCache: Record<string, string> = {};
 
 export const playSpeech = (text: string): void => {
@@ -19,14 +27,12 @@ export const playSpeech = (text: string): void => {
 
 export interface ImageResult {
   url: string | null;
-  error?: 'QUOTA' | 'SAFETY' | 'ERROR';
+  error?: 'QUOTA' | 'SAFETY' | 'ERROR' | 'KEY';
 }
 
 export const generateCartoonImage = async (word: string, category: string, id: string): Promise<ImageResult> => {
-  // 1. Check memory cache (fastest)
   if (memoryImageCache[id]) return { url: memoryImageCache[id] };
 
-  // 2. Check IndexedDB (Permanent storage on phone)
   try {
     const localData = await getImageLocal(id);
     if (localData) {
@@ -34,24 +40,16 @@ export const generateCartoonImage = async (word: string, category: string, id: s
       return { url: localData };
     }
   } catch (e) {
-    console.warn("Local DB access failed, proceeding to API");
+    console.warn("Local DB access failed");
   }
 
-  // 3. If not found, call API
   try {
     const ai = getAI();
     
-    let prompt = `A high-quality 3D cartoon style illustration of a ${word} for a children's learning app. Very bright and vibrant colors, happy and friendly look, clear shapes, studio lighting, isolated on a pure white background.`;
+    let prompt = `A high-quality 3D cartoon style illustration of a "${word}" for a children's learning app. Very bright and vibrant colors, happy and friendly look, isolated on a pure white background. Pixar style.`;
     
     if (category === 'body') {
-      prompt = `A friendly 3D cartoon illustration of a human ${word}. Educational and clear. Focus ONLY on the human ${word}. NO animals (no giraffes), NO full body, NO clothing. Pure white background, vibrant colors.`;
-      
-      if (word.toLowerCase() === 'neck') {
-        prompt = "A clear 3D cartoon illustration of a human neck. Simple, educational, happy colors. ONLY human neck, NO animals, NO giraffe. Isolated on white background.";
-      }
-      if (word.toLowerCase() === 'stomach') {
-        prompt = "A cute 3D cartoon illustration of a human stomach/belly area. Friendly for kids. NO pregnancy, NO food, just the human midsection. Isolated on white background.";
-      }
+      prompt = `A friendly 3D cartoon illustration of a human ${word} for kids. Isolated on white.`;
     }
 
     const response = await ai.models.generateContent({
@@ -66,28 +64,22 @@ export const generateCartoonImage = async (word: string, category: string, id: s
       }
     });
 
-    for (const part of response.candidates?.[0]?.content?.parts || []) {
-      if (part.inlineData) {
-        const url = `data:image/png;base64,${part.inlineData.data}`;
-        
-        // Save to memory cache
-        memoryImageCache[id] = url;
-        
-        // 4. Save to IndexedDB for permanent access
-        try {
-          await saveImageLocal(id, url);
-        } catch (e) {
-          console.error("Failed to save to local DB", e);
+    if (response.candidates && response.candidates[0]?.content?.parts) {
+      for (const part of response.candidates[0].content.parts) {
+        if (part.inlineData) {
+          const url = `data:image/png;base64,${part.inlineData.data}`;
+          memoryImageCache[id] = url;
+          try {
+            await saveImageLocal(id, url);
+          } catch (e) {}
+          return { url };
         }
-
-        return { url };
       }
     }
     return { url: null, error: 'ERROR' };
   } catch (error: any) {
-    console.error("Image Generation Error:", error);
-    if (error.message?.includes('429')) return { url: null, error: 'QUOTA' };
-    if (error.message?.includes('safety')) return { url: null, error: 'SAFETY' };
+    console.error("Image Error:", error);
+    if (error.message === "MISSING_API_KEY") return { url: null, error: 'KEY' };
     return { url: null, error: 'ERROR' };
   }
 };
@@ -99,23 +91,20 @@ export const chatWithAI = async (message: string) => {
       model: "gemini-3-flash-preview",
       contents: message,
       config: {
-        systemInstruction: "You are Bubbles, a kind teddy bear. Talk to a 4-year-old learning English. Use very simple words. You can use Farsi only if the child doesn't understand, otherwise stick to English.",
+        systemInstruction: "You are Bubbles, a magical teddy bear friend for kids. Use very simple English, emojis, and be super encouraging!",
       },
     });
-    return response.text || "Hello!";
-  } catch (error) {
-    return "Let's play!";
+    return response.text || "Hello! Let's learn!";
+  } catch (error: any) {
+    if (error.message === "MISSING_API_KEY") return "Please add my magic key in settings!";
+    return "I'm a little sleepy, let's talk soon! 💤";
   }
 };
 
 export const fetchNewWordCurriculum = async (category: string, existingWords: string[]) => {
   try {
     const ai = getAI();
-    // Improved prompt with explicit exclusion list
-    const prompt = `Give me 10 UNIQUE and NEW English words for kids in the category: "${category}". 
-    IMPORTANT: You MUST NOT return any of these words: ${existingWords.join(', ')}. 
-    Choose simple words suitable for 4-6 year olds. 
-    Return a JSON array of objects with "word" (English), "translation" (Persian/Farsi meaning), and "emoji".`;
+    const prompt = `Give me 10 NEW English words for kids in category "${category}". Skip: ${existingWords.join(', ')}. Return JSON.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
@@ -138,7 +127,6 @@ export const fetchNewWordCurriculum = async (category: string, existingWords: st
     });
     return JSON.parse(response.text || "[]");
   } catch (error) {
-    console.error("AI Error:", error);
     return [];
   }
 };
